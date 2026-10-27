@@ -33,7 +33,6 @@ import {
   type ReactNode,
   type MouseEvent,
   useCallback,
-  useLayoutEffect,
   useRef,
   type Ref,
 } from 'react';
@@ -335,13 +334,10 @@ export function ClickableCard({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const interactiveRef = useRef<HTMLElement | null>(null);
   const restoreFocusRef = useRef(false);
-  // The isDisabled value of the last commit: a link card that flips it
-  // replaces its hidden link (router component and plain anchor), and only
-  // that replacement takes focus back.
-  const committedDisabledRef = useRef(isDisabled);
-  useLayoutEffect(() => {
-    committedDisabledRef.current = isDisabled;
-  }, [isDisabled]);
+  // The isDisabled value of the link that just detached: a link card that
+  // flips it replaces its hidden link (router component and plain anchor),
+  // and only that replacement takes focus back.
+  const detachedDisabledRef = useRef<boolean | null>(null);
 
   // A focused link remounts when isDisabled changes: the replacement takes
   // focus back, without scrolling, if focus fell to the page. Any other
@@ -350,20 +346,24 @@ export function ClickableCard({
   const setInteractiveRef = useCallback(
     (node: HTMLElement | null) => {
       if (node == null) {
+        const previous = interactiveRef.current;
         restoreFocusRef.current =
-          interactiveRef.current != null &&
-          interactiveRef.current === document.activeElement;
+          previous != null && previous === previous.ownerDocument.activeElement;
+        detachedDisabledRef.current = isDisabled;
         interactiveRef.current = null;
         return;
       }
       interactiveRef.current = node;
-      const isFlip = committedDisabledRef.current !== isDisabled;
+      const isFlip =
+        detachedDisabledRef.current != null &&
+        detachedDisabledRef.current !== isDisabled;
       const active = node.ownerDocument.activeElement;
       const hasFallen = active == null || active === node.ownerDocument.body;
       if (restoreFocusRef.current && isFlip && hasFallen) {
         node.focus({preventScroll: true});
       }
       restoreFocusRef.current = false;
+      detachedDisabledRef.current = null;
     },
     [isDisabled],
   );
