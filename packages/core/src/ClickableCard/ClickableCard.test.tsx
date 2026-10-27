@@ -1,9 +1,11 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
+import type {ReactNode} from 'react';
 import {describe, it, expect, vi} from 'vitest';
 import {render, screen, fireEvent} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {ClickableCard} from './ClickableCard';
+import {LinkProvider} from '../Link';
 import {
   afterPaintsPress,
   hasReleaseFade,
@@ -169,6 +171,33 @@ describe('ClickableCard', () => {
     expect(fireEvent.click(link)).toBe(false);
     fireEvent.click(screen.getByText('Content'));
     expect(handleClick).not.toHaveBeenCalled();
+  });
+
+  it('does not render a disabled link through the router link component', () => {
+    function RouterLink({
+      href,
+      children,
+    }: {
+      href?: string;
+      children?: ReactNode;
+    }) {
+      if (href == null) {
+        throw new Error('Router link requires an href');
+      }
+      return <a href={href}>{children}</a>;
+    }
+
+    render(
+      <LinkProvider component={RouterLink}>
+        <ClickableCard label="Disabled link" href="/settings" isDisabled>
+          <span>Content</span>
+        </ClickableCard>
+      </LinkProvider>,
+    );
+
+    const link = screen.getByRole('link', {name: 'Disabled link'});
+    expect(link).toHaveAttribute('aria-disabled', 'true');
+    expect(link).not.toHaveAttribute('href');
   });
 
   it('runs onClick once from the keyboard via the hidden button', async () => {

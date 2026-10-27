@@ -347,6 +347,9 @@ export function ClickableCard({
 
   const isLink = href != null;
 
+  // Disabled links have no href, so bypass the router and render an anchor.
+  const LinkRoot = isDisabled ? 'a' : LinkComponent;
+
   // Only the `default` variant has a visible border. Card draws a transparent
   // 1px border on every other variant purely to avoid layout jitter; we drop
   // it here so the hover overlay covers the full box with no untinted ring.
@@ -385,7 +388,7 @@ export function ClickableCard({
       onMouseUp={!isDisabled ? handleMouseUp : undefined}
       {...props}>
       {isLink ? (
-        <LinkComponent
+        <LinkRoot
           ref={interactiveRef as React.Ref<HTMLAnchorElement>}
           href={isDisabled ? undefined : href}
           target={isDisabled ? undefined : target}
