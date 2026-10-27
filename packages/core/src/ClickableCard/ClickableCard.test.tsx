@@ -1,6 +1,6 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates.
 
-import type {ReactNode} from 'react';
+import {Activity, type ReactNode} from 'react';
 import {describe, it, expect, vi} from 'vitest';
 import {render, screen, fireEvent} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -224,6 +224,47 @@ describe('ClickableCard', () => {
       </ClickableCard>,
     );
     expect(screen.getByRole('link', {name: 'Focus card'})).toHaveFocus();
+  });
+
+  it('leaves focus where the person put it when a hidden card is revealed', async () => {
+    const user = userEvent.setup();
+    function Harness({isHidden}: {isHidden: boolean}) {
+      return (
+        <>
+          <Activity mode={isHidden ? 'hidden' : 'visible'}>
+            <ClickableCard label="Hidden card" href="/settings">
+              <span>Content</span>
+            </ClickableCard>
+          </Activity>
+          <button type="button">Elsewhere</button>
+        </>
+      );
+    }
+    const {rerender} = render(<Harness isHidden={false} />);
+    await user.tab();
+    expect(screen.getByRole('link', {name: 'Hidden card'})).toHaveFocus();
+    rerender(<Harness isHidden />);
+    screen.getByRole('button', {name: 'Elsewhere'}).focus();
+    rerender(<Harness isHidden={false} />);
+    expect(screen.getByRole('button', {name: 'Elsewhere'})).toHaveFocus();
+  });
+
+  it('takes focus back without scrolling the page', async () => {
+    const user = userEvent.setup();
+    const {rerender} = render(
+      <ClickableCard label="Scroll card" href="/settings">
+        <span>Content</span>
+      </ClickableCard>,
+    );
+    await user.tab();
+    const focus = vi.spyOn(HTMLElement.prototype, 'focus');
+    rerender(
+      <ClickableCard label="Scroll card" href="/settings" isDisabled>
+        <span>Content</span>
+      </ClickableCard>,
+    );
+    expect(focus).toHaveBeenCalledWith({preventScroll: true});
+    focus.mockRestore();
   });
 
   it('runs onClick once from the keyboard via the hidden button', async () => {
