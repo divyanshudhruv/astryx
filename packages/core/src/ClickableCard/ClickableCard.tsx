@@ -29,7 +29,13 @@
  * For toggle selection, use SelectableCard.
  */
 
-import {type ReactNode, type MouseEvent, useRef, type Ref} from 'react';
+import {
+  type ReactNode,
+  type MouseEvent,
+  useCallback,
+  useRef,
+  type Ref,
+} from 'react';
 import * as stylex from '@stylexjs/stylex';
 import type {StyleXStyles} from '@stylexjs/stylex';
 import {
@@ -327,6 +333,24 @@ export function ClickableCard({
   const pressable = usePressFeedback();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const interactiveRef = useRef<HTMLElement | null>(null);
+  const restoreFocusRef = useRef(false);
+
+  // A focused link remounts when isDisabled changes, so restore its focus.
+  const setInteractiveRef = useCallback((node: HTMLElement | null) => {
+    if (node == null) {
+      restoreFocusRef.current =
+        interactiveRef.current === document.activeElement;
+      interactiveRef.current = null;
+      return;
+    }
+
+    interactiveRef.current = node;
+    if (restoreFocusRef.current) {
+      restoreFocusRef.current = false;
+      node.focus();
+    }
+  }, []);
+
   const LinkComponent = useLinkComponent();
 
   const {onClick, onMouseUp} = useClickableContainer({
@@ -389,7 +413,7 @@ export function ClickableCard({
       {...props}>
       {isLink ? (
         <LinkRoot
-          ref={interactiveRef as React.Ref<HTMLAnchorElement>}
+          ref={setInteractiveRef}
           href={isDisabled ? undefined : href}
           target={isDisabled ? undefined : target}
           role={isDisabled ? 'link' : undefined}
@@ -402,7 +426,7 @@ export function ClickableCard({
         />
       ) : (
         <button
-          ref={interactiveRef as React.Ref<HTMLButtonElement>}
+          ref={setInteractiveRef}
           type="button"
           aria-label={label}
           aria-disabled={isDisabled || undefined}

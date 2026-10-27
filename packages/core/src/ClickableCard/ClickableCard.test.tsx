@@ -200,6 +200,32 @@ describe('ClickableCard', () => {
     expect(link).not.toHaveAttribute('href');
   });
 
+  it('keeps focus when a focused link card toggles its disabled state', async () => {
+    const user = userEvent.setup();
+    const {rerender} = render(
+      <ClickableCard label="Focus card" href="/settings">
+        <span>Content</span>
+      </ClickableCard>,
+    );
+
+    await user.tab();
+    expect(screen.getByRole('link', {name: 'Focus card'})).toHaveFocus();
+
+    rerender(
+      <ClickableCard label="Focus card" href="/settings" isDisabled>
+        <span>Content</span>
+      </ClickableCard>,
+    );
+    expect(screen.getByRole('link', {name: 'Focus card'})).toHaveFocus();
+
+    rerender(
+      <ClickableCard label="Focus card" href="/settings">
+        <span>Content</span>
+      </ClickableCard>,
+    );
+    expect(screen.getByRole('link', {name: 'Focus card'})).toHaveFocus();
+  });
+
   it('runs onClick once from the keyboard via the hidden button', async () => {
     const user = userEvent.setup();
     const handleClick = vi.fn();
