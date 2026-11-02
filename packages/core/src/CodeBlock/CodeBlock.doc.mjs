@@ -86,6 +86,13 @@ export const docs = {
             variant: 'ghost',
             size: 'sm',
             label: 'Run in terminal',
+            tooltip: 'Run in terminal',
+            icon: {
+              __element: 'Icon',
+              props: {icon: 'terminal', size: 'sm', color: 'inherit'},
+            },
+            // Match Copy's muted header glyph colour; Icon inherits it via color.
+            style: {color: 'var(--color-syntax-comment)'},
           },
         },
       ],

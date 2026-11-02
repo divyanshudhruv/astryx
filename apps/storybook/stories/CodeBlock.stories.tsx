@@ -5,6 +5,7 @@ import {CodeBlock} from '@astryxdesign/core/CodeBlock';
 import {java} from '@astryxdesign/core/CodeBlock/languages/java';
 import {thrift} from '@astryxdesign/core/CodeBlock/languages/thrift';
 import {IconButton} from '@astryxdesign/core/IconButton';
+import {Icon} from '@astryxdesign/core/Icon';
 
 const meta: Meta<typeof CodeBlock> = {
   title: 'Core/CodeBlock',
@@ -169,29 +170,15 @@ export const CopyClearance: Story = {
 // A product action beside Copy, as a ghost sm IconButton like Copy. With a
 // header it sits in the header; with no title and the label hidden it sits
 // in the corner column beside the code.
-const terminalIcon = (
-  <svg
-    viewBox="0 0 24 24"
-    width={16}
-    height={16}
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={2}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true">
-    <path d="m7 11 2-2-2-2" />
-    <path d="M11 13h4" />
-    <rect x="3" y="3" width="18" height="18" rx="2" />
-  </svg>
-);
 const runAction = (
   <IconButton
     variant="ghost"
     size="sm"
     label="Run in terminal"
     tooltip="Run in terminal"
-    icon={terminalIcon}
+    icon={<Icon icon="terminal" />}
+    // Match Copy's muted header glyph colour.
+    style={{color: 'var(--color-syntax-comment)'}}
   />
 );
 
@@ -222,7 +209,14 @@ export const EndContentTall: Story = {
     language: 'bash',
     hasLanguageLabel: false,
     endContent: (
-      <IconButton label="Run in terminal" variant="ghost" icon={terminalIcon} />
+      <IconButton
+        label="Run in terminal"
+        variant="ghost"
+        tooltip="Run in terminal"
+        icon={<Icon icon="terminal" />}
+        // Match Copy's muted header glyph colour.
+        style={{color: 'var(--color-syntax-comment)'}}
+      />
     ),
     width: '360px',
   },
