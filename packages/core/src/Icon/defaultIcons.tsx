@@ -291,4 +291,13 @@ export const defaultIcons: Record<IconName, ReactNode> &
       <path d="M12 18v4m-4 0h8" />
     </svg>
   ),
+
+  /** Terminal window showing a command prompt. */
+  terminal: (
+    <svg {...svgProps}>
+      <path d="m7 11 2-2-2-2" />
+      <path d="M11 13h4" />
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+    </svg>
+  ),
 };

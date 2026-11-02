@@ -44,6 +44,7 @@ export const BUILTIN_ICON_NAMES = [
   'wrench',
   'stop',
   'microphone',
+  'terminal',
 ] as const;
 
 export type BuiltinIconName = (typeof BUILTIN_ICON_NAMES)[number];
@@ -79,6 +80,7 @@ const SF_SYMBOLS: Record<BuiltinIconName, string> = {
   wrench: 'wrench.adjustable',
   stop: 'stop.fill',
   microphone: 'mic',
+  terminal: 'terminal',
 };
 
 /** Material Symbols names for Android. */
@@ -112,6 +114,7 @@ const MATERIAL_SYMBOLS: Record<BuiltinIconName, string> = {
   wrench: 'build',
   stop: 'stop',
   microphone: 'mic',
+  terminal: 'terminal',
 };
 
 const mapIcons = (
