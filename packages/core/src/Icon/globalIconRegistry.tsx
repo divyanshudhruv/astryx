@@ -100,7 +100,8 @@ export type ExtendedIconName = IconName | (string & {});
 /**
  * A complete icon registry: every semantic name mapped to a React node.
  */
-export type IconRegistry = Record<IconName, ReactNode>;
+export type IconRegistry = Record<Exclude<IconName, 'terminal'>, ReactNode> &
+  Partial<Record<'terminal', ReactNode>>;
 
 /**
  * What `Icon` asks a function icon entry for: the final Icon size, resolved

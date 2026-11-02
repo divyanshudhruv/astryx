@@ -92,6 +92,14 @@ describe('iconRegistry (global, RSC-compatible)', () => {
     expect(completeRegistry.upload).toBe(defaultIcons.upload);
   });
 
+  it('accepts a complete registry that omits terminal until the next minor', () => {
+    const {terminal: _terminal, ...registryWithoutTerminal} = defaultIcons;
+    const transitionalRegistry: IconRegistry = registryWithoutTerminal;
+    expect(transitionalRegistry).toBeDefined();
+    expect(getIcon('terminal')).toBe(defaultIcons.terminal);
+    expect(getIconRegistry().terminal).toBe(defaultIcons.terminal);
+  });
+
   it('lets a theme draw upload without changing arrowUp', () => {
     const theme = defineTheme({
       name: 'upload-only',

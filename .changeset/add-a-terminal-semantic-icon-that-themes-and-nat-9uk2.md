@@ -12,3 +12,5 @@
 
 [feat] Add a terminal semantic icon that themes and native platforms resolve
 @divyanshudhruv
+
+Themes and CLI theme templates draw `terminal`; native maps it to the SF Symbol and Material glyphs. A complete `IconRegistry` may omit `terminal` until the next minor.
